@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}登录 - 管理后台{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-box">
+        <h1>管理后台登录</h1>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.username.label }}
+                {{ form.username(class="form-control", autofocus=True) }}
+                {% for error in form.username.errors %}
+                    <span class="error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.password.label }}
+                {{ form.password(class="form-control") }}
+                {% for error in form.password.errors %}
+                    <span class="error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="form-group checkbox-group">
+                {{ form.remember() }} {{ form.remember.label }}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary", style="width: 100%") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

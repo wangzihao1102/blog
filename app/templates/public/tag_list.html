@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}标签: {{ tag.name }} - 我的博客{% endblock %}
+
+{% block content %}
+<header class="tag-header">
+    <h1>标签: {{ tag.name }}</h1>
+    <a href="{{ url_for('public.index') }}">&laquo; 返回首页</a>
+</header>
+
+<div class="post-list">
+    {% for post in posts.items %}
+    <article class="post-card">
+        <h2><a href="{{ url_for('public.post_detail', slug=post.slug) }}">{{ post.title }}</a></h2>
+        <div class="post-meta">
+            <span class="date">{{ post.date_created.strftime('%Y年%m月%d日') }}</span>
+            <span class="author">作者: {{ post.author.username }}</span>
+        </div>
+        <p class="excerpt">{{ post.excerpt or post.body[:150] }}...</p>
+        <div class="tags">
+            {% for t in post.tags %}
+                <a href="{{ url_for('public.by_tag', slug=t.slug) }}" class="tag">{{ t.name }}</a>
+            {% endfor %}
+        </div>
+    </article>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if posts.pages > 1 %}
+<nav class="pagination">
+    {% if posts.has_prev %}
+        <a href="{{ url_for('public.by_tag', slug=tag.slug, page=posts.prev_num) }}">&laquo; 上一页</a>
+    {% endif %}
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        {% if page_num %}
+            {% if page_num == posts.page %}
+                <span class="active">{{ page_num }}</span>
+            {% else %}
+                <a href="{{ url_for('public.by_tag', slug=tag.slug, page=page_num) }}">{{ page_num }}</a>
+            {% endif %}
+        {% else %}
+            <span>...</span>
+        {% endif %}
+    {% endfor %}
+    {% if posts.has_next %}
+        <a href="{{ url_for('public.by_tag', slug=tag.slug, page=posts.next_num) }}">下一页 &raquo;</a>
+    {% endif %}
+</nav>
+{% endif %}
+{% endblock %}

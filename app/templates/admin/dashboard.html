@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}仪表盘 - 管理后台{% endblock %}
+
+{% block content %}
+<header class="dashboard-header">
+    <h1>仪表盘</h1>
+    <a href="{{ url_for('admin.post_create') }}" class="btn btn-primary">+ 新建文章</a>
+</header>
+
+<!-- Stats Cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>{{ total_posts }}</h3>
+        <p>总文章数</p>
+    </div>
+    <div class="stat-card stat-published">
+        <h3>{{ published }}</h3>
+        <p>已发布</p>
+    </div>
+    <div class="stat-card stat-draft">
+        <h3>{{ drafts }}</h3>
+        <p>草稿</p>
+    </div>
+</div>
+
+<!-- Recent Posts Table -->
+<div class="dashboard-section">
+    <h2>最近文章</h2>
+    <table class="post-table">
+        <thead>
+            <tr>
+                <th>标题</th>
+                <th>状态</th>
+                <th>日期</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in recent %}
+            <tr>
+                <td>{{ post.title }}</td>
+                <td>
+                    {% if post.is_published %}
+                        <span class="badge badge-success">已发布</span>
+                    {% else %}
+                        <span class="badge badge-warning">草稿</span>
+                    {% endif %}
+                </td>
+                <td>{{ post.date_created.strftime('%Y-%m-%d') }}</td>
+                <td class="actions">
+                    <a href="{{ url_for('admin.post_edit', id=post.id) }}" class="btn btn-sm">编辑</a>
+                    <a href="{{ url_for('public.post_detail', slug=post.slug) }}" class="btn btn-sm" target="_blank">查看</a>
+                    <form action="{{ url_for('admin.post_delete', id=post.id) }}" method="POST"
+                          class="inline-form" onsubmit="return confirm('确定要删除这篇文章吗？')">
+                        <button type="submit" class="btn btn-sm btn-danger">删除</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Quick Actions -->
+<div class="dashboard-section">
+    <h2>快捷操作</h2>
+    <div class="quick-actions">
+        <a href="{{ url_for('admin.post_create') }}" class="btn">新建文章</a>
+        <a href="{{ url_for('admin.tag_manage') }}" class="btn">管理标签</a>
+    </div>
+</div>
+{% endblock %}

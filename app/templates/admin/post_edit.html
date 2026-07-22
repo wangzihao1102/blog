@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}{{ '编辑文章' if post else '新建文章' }} - 管理后台{% endblock %}
+
+{% block content %}
+<h1>{{ '编辑文章' if post else '新建文章' }}</h1>
+
+<form method="POST" id="post-form" class="post-edit-form">
+    {{ form.hidden_tag() }}
+
+    <div class="form-group">
+        {{ form.title.label }}
+        {{ form.title(class="form-control", placeholder="请输入文章标题") }}
+        {% for error in form.title.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <div class="form-group">
+        {{ form.excerpt.label }}
+        {{ form.excerpt(class="form-control", placeholder="文章摘要（可选）") }}
+        {% for error in form.excerpt.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <div class="form-group editor-group">
+        {{ form.body.label }}
+        <div class="editor-toolbar">
+            <button type="button" class="btn btn-sm" onclick="togglePreview()">切换预览</button>
+        </div>
+        {{ form.body(class="form-control markdown-editor", rows=20, placeholder="使用 Markdown 格式编写文章内容...") }}
+        <div id="preview-pane" class="preview-pane" style="display:none;">
+            <h3>预览</h3>
+            <div id="preview-content"></div>
+        </div>
+        {% for error in form.body.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <div class="form-group">
+        {{ form.tags.label }}
+        {{ form.tags(class="form-control", placeholder="python, flask, 教程") }}
+        <small class="hint">用逗号分隔多个标签</small>
+        {% for error in form.tags.errors %}
+            <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <div class="form-group checkbox-group">
+        {{ form.publish() }} {{ form.publish.label }}
+    </div>
+
+    <div class="form-actions">
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('admin.dashboard') }}" class="btn">取消</a>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/preview.js') }}"></script>
+{% endblock %}

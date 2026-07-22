@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}我的博客{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="{{ url_for('public.index') }}" class="logo">我的博客</a>
+            <div class="nav-links">
+                <a href="{{ url_for('public.index') }}">首页</a>
+                <a href="{{ url_for('public.categories') }}">归档</a>
+                <a href="#search" onclick="document.getElementById('search-input').focus(); return false;">搜索</a>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('admin.dashboard') }}">管理</a>
+                    <a href="{{ url_for('admin.logout') }}">退出</a>
+                {% else %}
+                    <a href="{{ url_for('admin.login') }}">登录</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            &copy; 2026 我的博客. All rights reserved.
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

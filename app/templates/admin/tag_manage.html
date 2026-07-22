@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}标签管理 - 管理后台{% endblock %}
+
+{% block content %}
+<header class="tag-header">
+    <h1>标签管理</h1>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn">&laquo; 返回仪表盘</a>
+</header>
+
+<!-- Add Tag Form -->
+<div class="add-tag-form">
+    <h2>添加新标签</h2>
+    <form method="POST" action="{{ url_for('admin.tag_manage') }}" class="inline-form">
+        <input type="text" name="name" class="form-control" placeholder="标签名称" required>
+        <button type="submit" class="btn btn-primary">添加</button>
+    </form>
+</div>
+
+<!-- Tags List -->
+<div class="tags-management">
+    <h2>现有标签</h2>
+    {% if tags %}
+    <table class="post-table">
+        <thead>
+            <tr>
+                <th>标签名</th>
+                <th>Slug</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tag in tags %}
+            <tr>
+                <td>{{ tag.name }}</td>
+                <td><code>{{ tag.slug }}</code></td>
+                <td>
+                    <form action="{{ url_for('admin.tag_delete', id=tag.id) }}" method="POST"
+                          class="inline-form" onsubmit="return confirm('确定要删除这个标签吗？')">
+                        <button type="submit" class="btn btn-sm btn-danger">删除</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="empty-state">
+            <p>暂无标签。</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
